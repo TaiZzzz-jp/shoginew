@@ -1,0 +1,2583 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>将棋同好会</title>
+
+<link rel="icon" type="image/png" href="icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&display=swap"
+    rel="stylesheet"
+>
+
+<style>
+
+/* ==================================================
+   基本
+================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+
+    background-color: #f4edda;
+
+    background-image:
+        radial-gradient(
+            rgba(120, 95, 50, 0.045) 0.7px,
+            transparent 0.7px
+        ),
+        radial-gradient(
+            rgba(255, 255, 255, 0.35) 0.8px,
+            transparent 0.8px
+        ),
+        repeating-linear-gradient(
+            0deg,
+            rgba(120, 100, 60, 0.018) 0px,
+            rgba(120, 100, 60, 0.018) 1px,
+            transparent 1px,
+            transparent 5px
+        );
+
+    background-size:
+        7px 7px,
+        11px 11px,
+        auto;
+
+    color: #333;
+}
+
+
+/* ==================================================
+   ヘッダー
+================================================== */
+
+.main-header {
+    padding: 8px 0;
+    border-bottom: 2px solid #dcd1be;
+    margin-bottom: 25px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-img {
+    height: 70px;
+    width: auto;
+    object-fit: contain;
+}
+
+.narajo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.narajo {
+    height: 65px;
+    width: auto;
+}
+
+.narajo-text {
+    font-size: 0.75rem;
+    color: #555;
+}
+
+
+/* ==================================================
+   言語切り替え
+================================================== */
+
+.lang-switcher {
+    font-family: sans-serif;
+    font-size: 0.85rem;
+    color: #bbb;
+    white-space: nowrap;
+}
+
+.lang-btn {
+    cursor: pointer;
+    color: #888;
+    padding: 0 3px;
+    user-select: none;
+}
+
+.lang-btn.active {
+    font-weight: bold;
+    color: #222;
+}
+
+
+/* ==================================================
+   画像
+================================================== */
+
+.image-place {
+    float: right;
+    margin-left: 20px;
+    margin-bottom: 15px;
+    width: 320px;
+
+    display: flex;
+    gap: 10px;
+}
+
+.image-place img {
+    width: 50%;
+    height: auto;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+
+/* ==================================================
+   タイトル・文章
+================================================== */
+
+h1 {
+    font-family:
+        "Noto Serif JP",
+        "Yu Mincho",
+        "Hiragino Mincho ProN",
+        serif;
+
+    font-size: 2.8rem;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    color: #222;
+}
+
+h3 {
+    font-family:
+        "Helvetica Neue",
+        "Arial",
+        "Hiragino Kaku Gothic ProN",
+        "Meiryo",
+        sans-serif;
+
+    color: #333;
+}
+
+p {
+    font-family:
+        "Helvetica Neue",
+        "Arial",
+        "Hiragino Kaku Gothic ProN",
+        "Meiryo",
+        sans-serif;
+
+    color: #333;
+    line-height: 1.9;
+}
+
+
+/* ==================================================
+   Kingタイトル
+================================================== */
+
+.king-title {
+    font-size: 2rem;
+    color: #8b0000;
+
+    border-left: 8px solid #d4af37;
+
+    padding-left: 10px;
+    margin-top: 35px;
+}
+
+
+/* ==================================================
+   ランク表
+================================================== */
+
+.rank-table {
+    border-collapse: collapse;
+    margin: 20px 0;
+
+    width: 100%;
+    max-width: 600px;
+}
+
+.rank-table th,
+.rank-table td {
+    border: 1px solid #999;
+    padding: 8px 15px;
+    text-align: left;
+}
+
+.rank-table th {
+    background: #f3e7b5;
+}
+
+
+/* ==================================================
+   情報ボックス
+================================================== */
+
+.info-box {
+    background: #fffdf6;
+
+    border-left: 6px solid #d4af37;
+    border-radius: 8px;
+
+    padding: 18px 20px;
+    margin-top: 30px;
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, .08);
+
+    line-height: 1.8;
+    font-size: 1.05rem;
+}
+
+.info-box hr {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 15px 0;
+}
+
+
+/* ==================================================
+   リーダーボード
+================================================== */
+
+.ranking-header,
+.player {
+    display: grid;
+
+    grid-template-columns:
+        80px 2fr 120px 170px;
+
+    align-items: center;
+    gap: 10px;
+
+    padding: 12px 16px;
+}
+
+.ranking-header {
+    font-weight: bold;
+
+    background: #f3e7b5;
+
+    border: 2px solid #d4af37;
+    border-bottom: none;
+
+    border-radius: 10px 10px 0 0;
+}
+
+.player {
+    background: #fff;
+
+    border-left: 2px solid #d4af37;
+    border-right: 2px solid #d4af37;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.player:last-child {
+    border-bottom: 2px solid #d4af37;
+    border-radius: 0 0 10px 10px;
+}
+
+.player:nth-child(even) {
+    background: #faf8f0;
+}
+
+.player span:first-child {
+    font-weight: bold;
+}
+
+.player span:nth-child(2) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.player span:last-child {
+    text-align: right;
+    font-weight: bold;
+    color: #8b0000;
+}
+
+
+/* ==================================================
+   初回起動演出
+================================================== */
+
+#firstrank {
+    position: fixed;
+    inset: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    background: #f4edda;
+
+    z-index: 999999;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    overflow: hidden;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Hiragino Sans",
+        "Yu Gothic",
+        sans-serif;
+
+    opacity: 1;
+
+    transition: opacity .8s ease;
+}
+
+#firstrank-stage {
+    position: relative;
+
+    width: 100%;
+    max-width: 1100px;
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+
+    padding: 30px;
+}
+
+
+/* ==================================================
+   ★ スキップボタン
+================================================== */
+
+#firstrank-skip {
+    position: absolute;
+
+    top: 24px;
+    right: 24px;
+
+    z-index: 100;
+
+    padding: 10px 20px;
+
+    border: 1px solid rgba(0, 0, 0, .18);
+    border-radius: 999px;
+
+    background: rgba(255, 255, 255, .72);
+
+    color: #555;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Hiragino Sans",
+        "Yu Gothic",
+        sans-serif;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, .08);
+
+    transition:
+        background .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+#firstrank-skip:hover {
+    background: #fff;
+
+    transform:
+        translateY(-1px);
+
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, .12);
+}
+
+#firstrank-skip:active {
+    transform:
+        scale(.95);
+}
+
+
+/* ==================================================
+   ① Kingランクマッチ
+================================================== */
+
+#firstrank-title {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 100%;
+
+    transform:
+        translate(-50%, -50%)
+        translateY(90px)
+        scale(.9);
+
+    font-size:
+        clamp(42px, 8vw, 100px);
+
+    font-weight: 900;
+
+    letter-spacing: -0.05em;
+
+    opacity: 0;
+}
+
+
+/* ==================================================
+   ② 説明
+================================================== */
+
+#firstrank-description {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%)
+        translateY(40px);
+
+    width: 100%;
+
+    padding: 20px;
+
+    opacity: 0;
+}
+
+.firstrank-description-title {
+    font-size:
+        clamp(34px, 6vw, 65px);
+
+    font-weight: 900;
+
+    margin-bottom: 28px;
+
+    letter-spacing: -0.03em;
+}
+
+.firstrank-description-text {
+    font-size:
+        clamp(19px, 3vw, 34px);
+
+    line-height: 1.75;
+
+    font-weight: 600;
+}
+
+
+/* ==================================================
+   ③ ランク
+================================================== */
+
+#firstrank-rank-display {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    width: 100%;
+
+    text-align: center;
+
+    font-size:
+        clamp(80px, 15vw, 190px);
+
+    font-weight: 900;
+
+    letter-spacing: -0.07em;
+
+    opacity: 0;
+
+    pointer-events: none;
+}
+
+
+/* ランクIN */
+
+.firstrank-rank-in {
+    animation:
+        firstrankRankIn
+        .65s
+        cubic-bezier(.16,1,.3,1)
+        forwards;
+}
+
+@keyframes firstrankRankIn {
+
+    0% {
+        opacity: 0;
+
+        transform:
+            translate(-50%, -50%)
+            translateY(120px)
+            scale(.82);
+    }
+
+    100% {
+        opacity: 1;
+
+        transform:
+            translate(-50%, -50%)
+            translateY(0)
+            scale(1);
+    }
+}
+
+
+/* ランクOUT */
+
+.firstrank-rank-out {
+    animation:
+        firstrankRankOut
+        .42s
+        cubic-bezier(.7,0,.84,0)
+        forwards;
+}
+
+@keyframes firstrankRankOut {
+
+    0% {
+        opacity: 1;
+
+        transform:
+            translate(-50%, -50%)
+            translateY(0)
+            scale(1);
+    }
+
+    100% {
+        opacity: 0;
+
+        transform:
+            translate(-50%, -50%)
+            translateY(-90px)
+            scale(1.08);
+    }
+}
+
+
+/* ==================================================
+   ④ 王将＋数字
+================================================== */
+
+#firstrank-plus {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%)
+        scale(.82);
+
+    width: 100%;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 25px;
+
+    opacity: 0;
+
+    white-space: nowrap;
+}
+
+.firstrank-plus-show {
+    animation:
+        firstrankPlusIn
+        .9s
+        cubic-bezier(.16,1,.3,1)
+        forwards;
+}
+
+@keyframes firstrankPlusIn {
+
+    0% {
+        opacity: 0;
+
+        transform:
+            translate(-50%, -50%)
+            scale(.82);
+    }
+
+    100% {
+        opacity: 1;
+
+        transform:
+            translate(-50%, -50%)
+            scale(1);
+    }
+}
+
+.firstrank-plus-text {
+    font-size:
+        clamp(65px, 12vw, 160px);
+
+    font-weight: 900;
+
+    letter-spacing: -0.06em;
+}
+
+#firstrank-plus-number {
+    font-size:
+        clamp(70px, 14vw, 180px);
+
+    font-weight: 900;
+
+    min-width: 190px;
+
+    text-align: left;
+
+    font-variant-numeric:
+        tabular-nums;
+
+    letter-spacing: -0.06em;
+}
+
+
+/* ==================================================
+   数字変化
+================================================== */
+
+.firstrank-number-change {
+    animation:
+        firstrankNumberChange
+        .08s
+        ease;
+}
+
+@keyframes firstrankNumberChange {
+
+    0% {
+        opacity: .35;
+
+        transform:
+            translateY(15px)
+            scale(.96);
+    }
+
+    100% {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+
+/* ==================================================
+   ⑤ 終わりのないランクバトル
+================================================== */
+
+#firstrank-endless {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%)
+        scale(.78);
+
+    width: 100%;
+
+    font-size:
+        clamp(38px, 7vw, 90px);
+
+    font-weight: 900;
+
+    letter-spacing: -0.04em;
+
+    opacity: 0;
+}
+
+.firstrank-endless-show {
+    animation:
+        firstrankEndlessIn
+        1s
+        cubic-bezier(.16,1,.3,1)
+        forwards;
+}
+
+@keyframes firstrankEndlessIn {
+
+    0% {
+        opacity: 0;
+
+        transform:
+            translate(-50%, -50%)
+            scale(.78);
+    }
+
+    100% {
+        opacity: 1;
+
+        transform:
+            translate(-50%, -50%)
+            scale(1);
+    }
+}
+
+
+/* ==================================================
+   一回勝ったら
+================================================== */
+
+#firstrank-win {
+    position: absolute;
+
+    left: 50%;
+
+    top:
+        calc(50% + 95px);
+
+    transform:
+        translateX(-50%)
+        translateY(30px);
+
+    width: 100%;
+
+    font-size:
+        clamp(24px, 4vw, 46px);
+
+    font-weight: 700;
+
+    opacity: 0;
+}
+
+.firstrank-win-show {
+    animation:
+        firstrankWinIn
+        .8s
+        ease
+        forwards;
+}
+
+@keyframes firstrankWinIn {
+
+    0% {
+        opacity: 0;
+
+        transform:
+            translateX(-50%)
+            translateY(30px);
+    }
+
+    100% {
+        opacity: 1;
+
+        transform:
+            translateX(-50%)
+            translateY(0);
+    }
+}
+
+
+/* ==================================================
+   スマホ
+================================================== */
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 0 14px;
+    }
+
+    .main-header {
+        gap: 8px;
+    }
+
+    .logo-img {
+        height: 52px;
+    }
+
+    .narajo {
+        height: 48px;
+    }
+
+    h1 {
+        font-size: 2.2rem;
+    }
+
+    .image-place {
+        float: none;
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .ranking-header,
+    .player {
+        grid-template-columns:
+            45px 1fr 70px 90px;
+
+        gap: 5px;
+
+        padding:
+            10px 7px;
+
+        font-size: 11px;
+    }
+
+    #firstrank-stage {
+        padding: 15px;
+    }
+
+    #firstrank-description {
+        padding: 15px;
+    }
+
+    .firstrank-description-title {
+        margin-bottom: 20px;
+    }
+
+    #firstrank-plus {
+        gap: 10px;
+    }
+
+    #firstrank-plus-number {
+        min-width: 100px;
+    }
+
+    #firstrank-win {
+        top:
+            calc(50% + 75px);
+    }
+
+    #firstrank-skip {
+        top: 15px;
+        right: 15px;
+
+        padding: 8px 15px;
+
+        font-size: 13px;
+    }
+}
+
+</style>
+
+</head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4XE1NC27K1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4XE1NC27K1');
+</script>
+<body>
+
+<!-- ==================================================
+     初回起動演出
+================================================== -->
+
+<div id="firstrank">
+
+
+<div id="firstrank-stage">
+
+
+    <!-- ★ スキップボタン -->
+
+    <button
+        id="firstrank-skip"
+        type="button"
+        aria-label="チュートリアルをスキップ"
+    >
+        スキップ
+    </button>
+
+
+    <div id="firstrank-title">
+        Kingランクマッチ
+    </div>
+
+
+    <div id="firstrank-description">
+
+        <div class="firstrank-description-title">
+            Kingランクマッチとは？
+        </div>
+
+        <div class="firstrank-description-text">
+
+            将棋の駒を使った<br>
+
+            終わりのないランクバトル。
+
+            <br><br>
+
+            一回勝つたびに、<br>
+
+            あなたのランクは一つ上がる。
+
+        </div>
+
+    </div>
+
+
+    <div id="firstrank-rank-display"></div>
+
+
+    <div id="firstrank-plus">
+
+        <span class="firstrank-plus-text">
+            王将＋
+        </span>
+
+        <span id="firstrank-plus-number">
+            1
+        </span>
+
+    </div>
+
+
+    <div id="firstrank-endless">
+        終わりのないランクバトル
+    </div>
+
+
+    <div id="firstrank-win">
+        一回勝ったら、一個上がる
+    </div>
+
+</div>
+
+
+</div>
+
+<!-- ==================================================
+     通常ページ
+================================================== -->
+
+<header class="main-header">
+
+
+<img
+    src="shogi.jpg"
+    alt="将棋同好会"
+    class="logo-img"
+>
+
+
+<div class="narajo-container">
+
+    <a
+        href="https://nwuss.nara-wu.ac.jp/"
+        target="_blank"
+        rel="noopener noreferrer"
+    >
+
+        <img
+            src="images.jpeg"
+            alt="奈良女子大学附属中等教育学校"
+            class="narajo"
+        >
+
+    </a>
+
+    <span class="narajo-text">
+        本校公式サイト
+    </span>
+
+</div>
+
+
+<div class="lang-switcher">
+
+    <span
+        class="lang-btn active"
+        id="jpBtn"
+    >
+        JP
+    </span>
+
+    /
+
+    <span
+        class="lang-btn"
+        id="enBtn"
+    >
+        EN
+    </span>
+
+</div>
+
+
+</header>
+
+<!-- ==================================================
+     画像
+================================================== -->
+
+<div class="image-place">
+
+<img
+    src="mapwhere.png"
+    alt="活動場所"
+>
+
+<img
+    src="IMG_0200-300x225.jpg"
+    alt="和室"
+>
+
+
+</div>
+
+<!-- ==================================================
+     メイン
+================================================== -->
+
+<div id="rank-area">
+
+
+<h1 id="title">
+    将棋同好会
+</h1>
+
+
+<h3 id="subtitle">
+    歩兵（ビギナー）も、王将（ベテラン）も。
+</h3>
+
+
+<p id="intro">
+
+    私たち将棋同好会は、部員24名で毎週木曜日と第2・第4水曜日に活動しています。
+
+    普段は静かな和室でパチリと駒を響かせていますが、
+    今年の学園祭は一味違います！
+
+    <br><br>
+
+    例年の学園祭では、お馴染みの和室で
+    「フリー対局スペース」を出店していましたが、
+
+    今年からは心機一転、
+    場所を【総合教育棟のゼミ2教室】へと移動します。
+
+    <br><br>
+
+    「和室の将棋部はちょっと敷居が高いな……」
+    と感じていたそこのあなた！
+
+    <br><br>
+
+    今回は教室というオープンな空間を活かし、
+    将棋盤に触ったことがない完全初心者の方から、
+
+    駒の動きなら任せろという方、
+    そして部員を唸らせるほど腕に覚えのある上級者まで、
+
+    誰もが時間を忘れて夢中になれるような、
+    これまでにない体験型イベントを出店します。
+
+    <br><br>
+
+    その名も、Kingランクマッチ。
+
+</p>
+
+
+<!-- ==================================================
+     Kingランクマッチ
+================================================== -->
+
+<div id="dynamic-content">
+
+    <h2 class="king-title">
+        Kingランクマッチ
+    </h2>
+
+
+    <p>
+
+        Kingランクマッチとは<br>
+
+        ランクシステム：
+        プレイヤーの強さは将棋のコマで表されます。
+
+        初期ランクからスタートし、
+        勝利数を重ねて成り上がろう！
+
+    </p>
+
+
+    <table class="rank-table">
+
+        <tr>
+            <th>ランク</th>
+            <th>強さ</th>
+        </tr>
+
+        <tr>
+            <td>歩兵</td>
+            <td>★☆☆☆</td>
+        </tr>
+
+        <tr>
+            <td>香車</td>
+            <td>★☆☆☆</td>
+        </tr>
+
+        <tr>
+            <td>桂馬</td>
+            <td>★☆☆☆</td>
+        </tr>
+
+        <tr>
+            <td>銀将</td>
+            <td>★★☆☆</td>
+        </tr>
+
+        <tr>
+            <td>金将</td>
+            <td>★★☆☆</td>
+        </tr>
+
+        <tr>
+            <td>と金</td>
+            <td>★★☆☆</td>
+        </tr>
+
+        <tr>
+            <td>成香</td>
+            <td>★★☆☆</td>
+        </tr>
+
+        <tr>
+            <td>成桂</td>
+            <td>★★★☆</td>
+        </tr>
+
+        <tr>
+            <td>成銀</td>
+            <td>★★★☆</td>
+        </tr>
+
+        <tr>
+            <td>角</td>
+            <td>★★★☆</td>
+        </tr>
+
+        <tr>
+            <td>飛車</td>
+            <td>★★★☆</td>
+        </tr>
+
+        <tr>
+            <td>馬</td>
+            <td>★★★★</td>
+        </tr>
+
+        <tr>
+            <td>竜王</td>
+            <td>★★★★</td>
+        </tr>
+
+        <tr>
+            <td>玉将</td>
+            <td>★★★★</td>
+        </tr>
+
+        <tr>
+            <td>王＋1～</td>
+            <td>★★★★+</td>
+        </tr>
+
+    </table>
+
+
+    <p>
+
+        玉将に到達したあとは…？
+
+        <br><br>
+
+        玉将＋1からどんどん上がっていき、
+        上限なきポイントバトルへ突入！
+
+        最強の王者を目指せ！
+
+        <br><br>
+
+        部員一同、皆さんと盤上で
+        （あるいは盤外で！）お会いできるのを楽しみに、
+        全力で準備を進めています。
+
+        <br><br>
+
+        ぜひお気軽にお立ち寄りください！
+
+    </p>
+
+</div>
+
+
+<!-- ==================================================
+     リーダーボード
+================================================== -->
+
+<h2 class="king-title">
+    リーダーボード
+</h2>
+
+
+<div class="ranking-header">
+
+    <span>
+        順位
+    </span>
+
+    <span>
+        名前
+    </span>
+
+    <span>
+        ランク
+    </span>
+
+    <span>
+        達成日時
+    </span>
+
+</div>
+
+
+<div id="leaderboard">
+    読み込み中...
+</div>
+
+
+<p id="lastUpdate"></p>
+
+
+<!-- ==================================================
+     情報
+================================================== -->
+
+<div
+    id="info"
+    class="info-box"
+>
+
+    <strong>
+        活動場所
+    </strong>
+
+    <br>
+
+    総合教育棟 ゼミ2教室
+
+    <hr>
+
+    <strong>
+        日程
+    </strong>
+
+    <br>
+
+    9/19(土)・9/20(日)
+
+</div>
+
+</div>
+
+<p>
+
+
+言語切り替えに一部誤りがあるところや、
+表示が正しくない箇所があります。
+
+<br>
+
+There are some translation errors.
+
+
+</p>
+
+<p>
+
+
+このページのリーダーボードは
+通信環境によって見れない可能性があります。
+
+<br>
+
+
+</p>
+
+<!-- ==================================================
+     JavaScript
+================================================== -->
+
+<script>
+
+
+/* ==================================================
+   日本語データ
+================================================== */
+
+const jpData = {
+
+    title:
+        document.getElementById("title").innerHTML,
+
+    subtitle:
+        document.getElementById("subtitle").innerHTML,
+
+    intro:
+        document.getElementById("intro").innerHTML,
+
+    dynamicContent:
+        document.getElementById("dynamic-content").innerHTML,
+
+    info:
+        document.getElementById("info").innerHTML
+
+};
+
+
+/* ==================================================
+   英語データ
+================================================== */
+
+const enData = {
+
+    title:
+        "Shogi Club",
+
+    subtitle:
+        "From Beginner to King.",
+
+    intro: `
+
+        We are the Shogi Club with 24 members.
+
+        <br><br>
+
+        We meet every Thursday
+        and on the 2nd and 4th Wednesdays.
+
+        <br><br>
+
+        This year, our school festival
+        will be a little different!
+
+        <br><br>
+
+        Our event will be held in
+        Seminar Room 2 of the General Education Building.
+
+        <br><br>
+
+        Whether you have never played shogi before
+        or you are an experienced player,
+        everyone is welcome!
+
+        <br><br>
+
+        Our event is called
+        <strong>King Ranked Match.</strong>
+
+    `,
+
+    dynamicContent: `
+
+        <h2 class="king-title">
+            King Ranked Match
+        </h2>
+
+        <p>
+
+            Your strength is represented
+            by a shogi piece.
+
+            <br>
+
+            Start from the lowest rank
+            and climb higher by winning games!
+
+        </p>
+
+
+        <table class="rank-table">
+
+            <tr>
+                <th>Rank</th>
+                <th>Strength</th>
+            </tr>
+
+            <tr>
+                <td>Pawn</td>
+                <td>★☆☆☆</td>
+            </tr>
+
+            <tr>
+                <td>Lance</td>
+                <td>★☆☆☆</td>
+            </tr>
+
+            <tr>
+                <td>Knight</td>
+                <td>★☆☆☆</td>
+            </tr>
+
+            <tr>
+                <td>Silver</td>
+                <td>★★☆☆</td>
+            </tr>
+
+            <tr>
+                <td>Gold</td>
+                <td>★★☆☆</td>
+            </tr>
+
+            <tr>
+                <td>Promoted Pawn</td>
+                <td>★★☆☆</td>
+            </tr>
+
+            <tr>
+                <td>Promoted Lance</td>
+                <td>★★☆☆</td>
+            </tr>
+
+            <tr>
+                <td>Promoted Knight</td>
+                <td>★★★☆</td>
+            </tr>
+
+            <tr>
+                <td>Promoted Silver</td>
+                <td>★★★☆</td>
+            </tr>
+
+            <tr>
+                <td>Bishop</td>
+                <td>★★★☆</td>
+            </tr>
+
+            <tr>
+                <td>Rook</td>
+                <td>★★★☆</td>
+            </tr>
+
+            <tr>
+                <td>Horse</td>
+                <td>★★★★</td>
+            </tr>
+
+            <tr>
+                <td>Dragon King</td>
+                <td>★★★★</td>
+            </tr>
+
+            <tr>
+                <td>King</td>
+                <td>★★★★</td>
+            </tr>
+
+            <tr>
+                <td>King +1 and above</td>
+                <td>★★★★+</td>
+            </tr>
+
+        </table>
+
+
+        <p>
+
+            Once you reach the King rank,
+            there is no upper limit.
+
+            <br><br>
+
+            Keep winning and climb forever!
+
+            <br><br>
+
+            We look forward to seeing you
+            at the school festival.
+
+        </p>
+
+    `,
+
+    info: `
+
+        <strong>
+            Location
+        </strong>
+
+        <br>
+
+        General Education Building,
+        Seminar Room 2
+
+        <hr>
+
+        <strong>
+            Date
+        </strong>
+
+        <br>
+
+        September 19 – September 20
+
+    `
+};
+
+
+/* ==================================================
+   言語切り替え
+================================================== */
+
+const jpBtn =
+    document.getElementById("jpBtn");
+
+const enBtn =
+    document.getElementById("enBtn");
+
+
+jpBtn.addEventListener(
+    "click",
+    function () {
+
+        document.getElementById("title").innerHTML =
+            jpData.title;
+
+        document.getElementById("subtitle").innerHTML =
+            jpData.subtitle;
+
+        document.getElementById("intro").innerHTML =
+            jpData.intro;
+
+        document.getElementById("dynamic-content").innerHTML =
+            jpData.dynamicContent;
+
+        document.getElementById("info").innerHTML =
+            jpData.info;
+
+        jpBtn.classList.add("active");
+
+        enBtn.classList.remove("active");
+
+    }
+);
+
+
+enBtn.addEventListener(
+    "click",
+    function () {
+
+        document.getElementById("title").innerHTML =
+            enData.title;
+
+        document.getElementById("subtitle").innerHTML =
+            enData.subtitle;
+
+        document.getElementById("intro").innerHTML =
+            enData.intro;
+
+        document.getElementById("dynamic-content").innerHTML =
+            enData.dynamicContent;
+
+        document.getElementById("info").innerHTML =
+            enData.info;
+
+        enBtn.classList.add("active");
+
+        jpBtn.classList.remove("active");
+
+    }
+);
+
+
+/* ==================================================
+   Google Apps Script
+================================================== */
+
+const GAS_URL =
+    "https://script.google.com/macros/s/AKfycbynZ5ARUoEXCN7F6r88Auzc6mV-ustulcbvCkQNIEX5tsYWL9CyLLCYTNGM5p-6Kvbv1w/exec";
+
+
+fetch(GAS_URL)
+
+    .then(
+        response => {
+
+            if (!response.ok) {
+                throw new Error(
+                    "GAS response error: " +
+                    response.status
+                );
+            }
+
+            return response.json();
+
+        }
+    )
+
+    .then(
+        data => {
+
+            let html = "";
+
+            if (
+                data.ranking &&
+                Array.isArray(data.ranking)
+            ) {
+
+                data.ranking.forEach(
+                    player => {
+
+                        const crown =
+                            Number(player.rankNo) === 1
+                                ? "♛ "
+                                : "";
+
+                        html += `
+
+                            <div class="player">
+
+                                <span>
+                                    ${crown}#${escapeHTML(player.rankNo)}
+                                </span>
+
+                                <span>
+                                    ${escapeHTML(player.nickname)}
+                                </span>
+
+                                <span>
+                                    ${escapeHTML(player.displayRank)}
+                                </span>
+
+                                <span>
+                                    ${escapeHTML(player.achievedAt)}
+                                </span>
+
+                            </div>
+
+                        `;
+
+                    }
+                );
+
+            }
+
+
+            document.getElementById(
+                "leaderboard"
+            ).innerHTML =
+                html ||
+                "ランキングデータがありません";
+
+
+            if (data.updated) {
+
+                document.getElementById(
+                    "lastUpdate"
+                ).innerHTML =
+                    "最終更新：" +
+                    escapeHTML(data.updated);
+
+            }
+
+        }
+    )
+
+    .catch(
+        error => {
+
+            console.error(
+                "Leaderboard error:",
+                error
+            );
+
+            document.getElementById(
+                "leaderboard"
+            ).innerHTML =
+                "ランキングを取得できませんでした";
+
+        }
+    );
+
+
+/* ==================================================
+   HTMLエスケープ
+================================================== */
+
+function escapeHTML(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* ==================================================
+   初回起動演出
+================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const firstrank =
+            document.getElementById(
+                "firstrank"
+            );
+
+        const title =
+            document.getElementById(
+                "firstrank-title"
+            );
+
+        const description =
+            document.getElementById(
+                "firstrank-description"
+            );
+
+        const rankDisplay =
+            document.getElementById(
+                "firstrank-rank-display"
+            );
+
+        const plus =
+            document.getElementById(
+                "firstrank-plus"
+            );
+
+        const plusNumber =
+            document.getElementById(
+                "firstrank-plus-number"
+            );
+
+        const endless =
+            document.getElementById(
+                "firstrank-endless"
+            );
+
+        const win =
+            document.getElementById(
+                "firstrank-win"
+            );
+
+        const skipButton =
+            document.getElementById(
+                "firstrank-skip"
+            );
+
+
+        /* ==================================================
+           ★ スキップ管理
+        ================================================== */
+
+        let firstrankSkipped = false;
+
+        const firstrankTimers = [];
+
+
+        function firstrankSetTimeout(
+            callback,
+            delay
+        ) {
+
+            if (firstrankSkipped) {
+                return null;
+            }
+
+            const timer =
+                setTimeout(
+                    function () {
+
+                        if (
+                            firstrankSkipped
+                        ) {
+                            return;
+                        }
+
+                        callback();
+
+                    },
+                    delay
+                );
+
+            firstrankTimers.push(
+                timer
+            );
+
+            return timer;
+
+        }
+
+
+        function clearFirstrankTimers() {
+
+            firstrankTimers.forEach(
+                function (timer) {
+
+                    clearTimeout(timer);
+
+                }
+            );
+
+            firstrankTimers.length = 0;
+
+        }
+
+
+        /* ==================================================
+           ★ スキップ処理
+        ================================================== */
+
+        function skipFirstrank() {
+
+            if (firstrankSkipped) {
+                return;
+            }
+
+            firstrankSkipped = true;
+
+
+            /* タイマー全部停止 */
+
+            clearFirstrankTimers();
+
+
+            /* アニメーション停止 */
+
+            title.style.animation =
+                "none";
+
+            description.style.animation =
+                "none";
+
+            rankDisplay.style.animation =
+                "none";
+
+            plus.style.animation =
+                "none";
+
+            endless.style.animation =
+                "none";
+
+            win.style.animation =
+                "none";
+
+
+            /* 表示を全部リセット */
+
+            title.style.opacity =
+                "0";
+
+            description.style.opacity =
+                "0";
+
+            rankDisplay.style.opacity =
+                "0";
+
+            plus.style.opacity =
+                "0";
+
+            endless.style.opacity =
+                "0";
+
+            win.style.opacity =
+                "0";
+
+
+            /* スキップボタンを消す */
+
+            skipButton.style.pointerEvents =
+                "none";
+
+            skipButton.style.opacity =
+                "0";
+
+
+            /* オーバーレイを閉じる */
+
+            firstrank.style.opacity =
+                "0";
+
+
+            setTimeout(
+                function () {
+
+                    firstrank.style.display =
+                        "none";
+
+                },
+                450
+            );
+
+        }
+
+
+        skipButton.addEventListener(
+            "click",
+            skipFirstrank
+        );
+
+
+        /* ==================================================
+           演出開始
+        ================================================== */
+
+        function startAnimation() {
+
+            if (firstrankSkipped) {
+                return;
+            }
+
+
+            /* 全部リセット */
+
+            title.style.opacity =
+                "0";
+
+            title.style.transform =
+                "translate(-50%, -50%) translateY(90px) scale(.9)";
+
+
+            description.style.opacity =
+                "0";
+
+            description.style.transform =
+                "translate(-50%, -50%) translateY(40px)";
+
+
+            rankDisplay.style.display =
+                "block";
+
+            rankDisplay.style.opacity =
+                "0";
+
+            rankDisplay.className =
+                "";
+
+            rankDisplay.textContent =
+                "";
+
+
+            plus.style.opacity =
+                "0";
+
+            plus.className =
+                "";
+
+
+            endless.style.opacity =
+                "0";
+
+            endless.className =
+                "";
+
+
+            win.style.opacity =
+                "0";
+
+            win.className =
+                "";
+
+
+            firstrank.style.opacity =
+                "1";
+
+
+            /* ==================================================
+               ① タイトル
+            ================================================== */
+
+            firstrankSetTimeout(
+                function () {
+
+                    if (firstrankSkipped) {
+                        return;
+                    }
+
+                    title.style.transition =
+                        "opacity 1s ease, transform 1s cubic-bezier(.16,1,.3,1)";
+
+                    title.style.opacity =
+                        "1";
+
+                    title.style.transform =
+                        "translate(-50%, -50%) translateY(0) scale(1)";
+
+                },
+                100
+            );
+
+
+            /* ==================================================
+               ② 説明
+            ================================================== */
+
+            firstrankSetTimeout(
+                function () {
+
+                    if (firstrankSkipped) {
+                        return;
+                    }
+
+                    title.style.transition =
+                        "opacity .6s ease, transform .6s ease";
+
+                    title.style.opacity =
+                        "0";
+
+                    title.style.transform =
+                        "translate(-50%, -50%) translateY(-60px) scale(1.04)";
+
+
+                    firstrankSetTimeout(
+                        function () {
+
+                            if (firstrankSkipped) {
+                                return;
+                            }
+
+                            description.style.transition =
+                                "opacity .8s ease, transform .8s cubic-bezier(.16,1,.3,1)";
+
+                            description.style.opacity =
+                                "1";
+
+                            description.style.transform =
+                                "translate(-50%, -50%) translateY(0)";
+
+                        },
+                        650
+                    );
+
+                },
+                2500
+            );
+
+
+            /* ==================================================
+               ③ 説明終了 → ランク
+            ================================================== */
+
+            firstrankSetTimeout(
+                function () {
+
+                    if (firstrankSkipped) {
+                        return;
+                    }
+
+                    description.style.transition =
+                        "opacity .6s ease, transform .6s ease";
+
+                    description.style.opacity =
+                        "0";
+
+                    description.style.transform =
+                        "translate(-50%, -50%) translateY(-50px)";
+
+
+                    firstrankSetTimeout(
+                        function () {
+
+                            if (firstrankSkipped) {
+                                return;
+                            }
+
+                            startRanks();
+
+                        },
+                        650
+                    );
+
+                },
+                6000
+            );
+
+        }
+
+
+        /* ==================================================
+           ランク一覧
+        ================================================== */
+
+        const ranks = [
+
+            "歩兵",
+            "香車",
+            "桂馬",
+            "銀将",
+            "金将",
+            "と金",
+            "成香",
+            "成桂",
+            "成銀",
+            "角",
+            "飛車",
+            "馬",
+            "竜王",
+            "玉将"
+
+        ];
+
+
+        let rankIndex = 0;
+
+
+        function startRanks() {
+
+            if (firstrankSkipped) {
+                return;
+            }
+
+            rankIndex = 0;
+
+            rankDisplay.style.display =
+                "block";
+
+            showNextRank();
+
+        }
+
+
+        function showNextRank() {
+
+            if (firstrankSkipped) {
+                return;
+            }
+
+
+            if (
+                rankIndex >= ranks.length
+            ) {
+
+                startPlus();
+
+                return;
+
+            }
+
+
+            /* 完全リセット */
+
+            rankDisplay.className =
+                "";
+
+            rankDisplay.style.opacity =
+                "0";
+
+            rankDisplay.textContent =
+                ranks[rankIndex];
+
+
+            /* 強制リフロー */
+
+            void rankDisplay.offsetWidth;
+
+
+            /* IN */
+
+            rankDisplay.classList.add(
+                "firstrank-rank-in"
+            );
+
+
+            /* 表示 */
+
+            firstrankSetTimeout(
+                function () {
+
+                    if (firstrankSkipped) {
+                        return;
+                    }
+
+
+                    rankDisplay.classList.remove(
+                        "firstrank-rank-in"
+                    );
+
+                    void rankDisplay.offsetWidth;
+
+                    rankDisplay.classList.add(
+                        "firstrank-rank-out"
+                    );
+
+
+                    /* 次 */
+
+                    firstrankSetTimeout(
+                        function () {
+
+                            if (firstrankSkipped) {
+                                return;
+                            }
+
+                            rankIndex++;
+
+                            showNextRank();
+
+                        },
+                        500
+                    );
+
+                },
+                850
+            );
+
+        }
+
+
+        /* ==================================================
+           ④ 王将＋数字
+        ================================================== */
+
+        function startPlus() {
+
+            if (firstrankSkipped) {
+                return;
+            }
+
+
+            rankDisplay.style.display =
+                "none";
+
+
+            plusNumber.textContent =
+                "1";
+
+
+            plus.className =
+                "";
+
+            void plus.offsetWidth;
+
+
+            plus.classList.add(
+                "firstrank-plus-show"
+            );
+
+
+            let number = 1;
+
+
+            function countPlus() {
+
+                if (firstrankSkipped) {
+                    return;
+                }
+
+
+                plusNumber.textContent =
+                    number.toLocaleString();
+
+
+                plusNumber.classList.remove(
+                    "firstrank-number-change"
+                );
+
+                void plusNumber.offsetWidth;
+
+                plusNumber.classList.add(
+                    "firstrank-number-change"
+                );
+
+
+                if (number < 10) {
+
+                    number += 1;
+
+                    firstrankSetTimeout(
+                        countPlus,
+                        180
+                    );
+
+                }
+
+                else if (number < 100) {
+
+                    number += 5;
+
+                    firstrankSetTimeout(
+                        countPlus,
+                        120
+                    );
+
+                }
+
+                else if (number < 1000) {
+
+                    number += 50;
+
+                    firstrankSetTimeout(
+                        countPlus,
+                        80
+                    );
+
+                }
+
+                else if (number < 10000) {
+
+                    number += 500;
+
+                    firstrankSetTimeout(
+                        countPlus,
+                        55
+                    );
+
+                }
+
+                else if (number < 100000) {
+
+                    number += 5000;
+
+                    firstrankSetTimeout(
+                        countPlus,
+                        35
+                    );
+
+                }
+
+                else if (number < 1000000) {
+
+                    number += 100000;
+
+                    firstrankSetTimeout(
+                        countPlus,
+                        25
+                    );
+
+                }
+
+                else {
+
+                    plusNumber.textContent =
+                        "∞";
+
+                    plusNumber.classList.remove(
+                        "firstrank-number-change"
+                    );
+
+
+                    firstrankSetTimeout(
+                        showEndless,
+                        1000
+                    );
+
+                }
+
+            }
+
+
+            firstrankSetTimeout(
+                countPlus,
+                900
+            );
+
+        }
+
+
+        /* ==================================================
+           ⑤ 無限
+        ================================================== */
+
+        function showEndless() {
+
+            if (firstrankSkipped) {
+                return;
+            }
+
+
+            plus.style.transition =
+                "opacity .6s ease, transform .6s ease";
+
+            plus.style.opacity =
+                "0";
+
+            plus.style.transform =
+                "translate(-50%, -50%) scale(1.1)";
+
+
+            firstrankSetTimeout(
+                function () {
+
+                    if (firstrankSkipped) {
+                        return;
+                    }
+
+
+                    plus.style.display =
+                        "none";
+
+
+                    endless.className =
+                        "";
+
+                    void endless.offsetWidth;
+
+
+                    endless.classList.add(
+                        "firstrank-endless-show"
+                    );
+
+
+                    /* ==================================================
+                       ⑥ 一回勝ったら
+                    ================================================== */
+
+                    firstrankSetTimeout(
+                        function () {
+
+                            if (firstrankSkipped) {
+                                return;
+                            }
+
+
+                            win.className =
+                                "";
+
+                            void win.offsetWidth;
+
+
+                            win.classList.add(
+                                "firstrank-win-show"
+                            );
+
+
+                            /* ==================================================
+                               ⑦ 終了
+                            ================================================== */
+
+                            firstrankSetTimeout(
+                                function () {
+
+                                    if (firstrankSkipped) {
+                                        return;
+                                    }
+
+
+                                    firstrank.style.opacity =
+                                        "0";
+
+
+                                    firstrankSetTimeout(
+                                        function () {
+
+                                            if (firstrankSkipped) {
+                                                return;
+                                            }
+
+                                            firstrank.style.display =
+                                                "none";
+
+                                        },
+                                        800
+                                    );
+
+                                },
+                                2600
+                            );
+
+                        },
+                        1100
+                    );
+
+                },
+                650
+            );
+
+        }
+
+
+        /* ==================================================
+           実行
+           ※ 毎回表示
+        ================================================== */
+
+        startAnimation();
+
+    }
+);
+
+</script>
+
+</body>
+
+</html>
